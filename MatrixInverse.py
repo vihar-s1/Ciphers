@@ -12,7 +12,7 @@ IMP points:
 '''
 import numpy as np
 
-def inverse(matrix: list[list], m: int=26):
+def inverse(matrix: list[list], m: int=26) -> list[list] | None:
     '''
     - Calculates matrix inverse over ring of size m.
     - default ring size is 26.

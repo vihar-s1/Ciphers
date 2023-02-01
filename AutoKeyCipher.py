@@ -1,11 +1,19 @@
 #!/usr/bin/env python
 from os import system
 
+'''
+Encryption and Decryption functions for AutoKey-Cipher given the key is known.
+'''
 
 __char_index = {chr(i+97):i for i in range(26)}
 __index_char = {i:chr(i+97) for i in range(26)}
         
-def encrypt(text: str, key: int):
+        
+def encrypt(text: str, key: int) -> str:
+    '''
+    - Performs Encryption operation on Cipher text using key 'key'.
+    - returns cipher text
+    '''
     text = list(text)
     cipher = []
     
@@ -18,7 +26,12 @@ def encrypt(text: str, key: int):
         
     return ''.join(cipher)
 
+
 def decrypt(cipher: str, key: int):
+    '''
+    - Performs Decryption operation on Cipher text using key 'key'.
+    - returns plain text
+    '''
     text = []
     cipher = list(cipher)
     
