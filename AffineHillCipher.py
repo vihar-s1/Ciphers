@@ -13,11 +13,15 @@ __index_char = {v:k for (k,v) in __char_index.items()}
 
 
 def findKey(plainText: str, cipherText: str) -> tuple[list[list], list]:
-    '''
-    Attempts to find the key for the given plainText-CipherText pair.
-    If key is found, it returns the key (L, b) as a tuple, otherwise returns None.
-    The key returned will be of the smallest possible dimension in case multiple keys are found.
-    '''
+    """makes an attempt to find the key used to encrypt plainText to cipherText
+
+    Args:
+        plainText (str): original message text which is encryted
+        cipherText (str): cipher text corresponding to the plainText
+
+    Returns:
+        tuple[list[list[int]], list[int]]: key in a form of tuple (L, b) where y = xL + b. returns None if key is not found.
+    """
     plainText, cipherText = plainText.lower(), cipherText.lower()
     
     # key component L needs to be a sqr matrix of size m such that sqr(m) <= text length so that matrix inversion operations are possible
@@ -59,7 +63,8 @@ def findKey(plainText: str, cipherText: str) -> tuple[list[list], list]:
             
             # now using Lx + b = y (mod 26)
             b = ( np.array(cipher_mat_1[0]) - np.array(plain_mat_1[0]) @ L ) % 26
-            if L is not None and b is not None:
+            
+            if MatrixInverse.inverse(L) is not None: # L is invertible over Z26 so it is valid key matrix
                 return L.tolist(), b.tolist()
             
     # key not found so we return none
@@ -67,14 +72,64 @@ def findKey(plainText: str, cipherText: str) -> tuple[list[list], list]:
     return None
             
             
-def encrypt(plainText: str, L: list[list], b:list) -> str:
-    pass            
+def encrypt(plainText: str, L: list[list], b:list[int]) -> str:
+    """performs affine-hill cipher encryption process on given cipher text
+
+    Args:
+        plainText (str): plain text to be encrypted
+        L (list[list]): matrix key L to multiplied with plain text matrix
+        b (list[int]): vector key to shift the x*L product
+
+    Returns:
+        str: cipher text is returned in case successful encryption else returns None
+    """
+    keyDim = len(b)
+    # replacing any non-alphabetic characters with empty string
+    plainText = plainText.replace(r'[^a-zA-Z]+','')
+    
+    # basic checks to ensure valid key-dimensions
+    if len(L) != keyDim:
+        return
+    for row in L:
+        if len(row) != keyDim:
+            return
+    # key is not invertible over Z26 and hence cannot be used for encoding-decoding
+    if MatrixInverse.inverse(L) is None:
+        return
+    
+    #padding plaintext with letter z to ensure that it can be converted to a matrix    
+    while len(plainText) % keyDim != 0:
+        plainText += "z"
+        
+    plain_mat = []
+    # converting plain text to plainText matrix in corresponding Z26 values
+    for i in range(len(plainText)//keyDim):
+        temp = plainText[ i*keyDim : i*keyDim + keyDim ]
+        plain_mat.append( list( map(lambda x: __char_index[x], temp) ) )
+    
+    cipher_mat = ( np.array(plain_mat) @ np.array(L) + np.array(b) ) % 26
+    
+    if cipher_mat is None: # never possible condition
+        return None
+    
+    cipher_mat = [ "".join(list(map(lambda x: __index_char[x], row))) for row in cipher_mat ]
+    return "".join(cipher_mat)
       
 
 def __main__():
-    L, m = findKey("adisplayedequation", "dsrmsioplxljbzullm")
+    key = findKey("adisplayedequation", "dsrmsioplxljbzullm")
+    
+    if key is None:
+        print("No key found")
+        return
+    
+    L, m = key
     print(f"L: {L}")
     print(f"m: {m}")
-
+    print()
+    print("encrypted:", encrypt("adisplayedequation", L, m).upper())
+    print("expected:  DSRMSIOPLXLJBZULLM")
+    
+    
 if __name__ == "__main__":
     __main__()
