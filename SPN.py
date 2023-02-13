@@ -9,7 +9,6 @@ __char_index = {chr(i+97): i for i in range(26)}
 
 
 def __xor(s1: str, s2: str) -> str:
-def __xor(s1: str, s2: str) -> str:
     s = ""
     for (i, j) in zip(s1, s2):
         s += str((int(i) + int(j)) % 2)
@@ -73,34 +72,14 @@ def encrypt(x: str, Ps: dict, Pp: list[int], k: list[str]):
         for r in range(N):  # performing N Substitution Permutation Rounds
             u = __xor(w, k[r])  # u^r = w^r-1 XOR k^r
             v = ""
-    
-    w_vec = []  # breaking message x in chunks of length L * M
-    for i in range(len(x)//unitLength):
-        w_vec.append( x[i*unitLength : i*unitLength + unitLength] )
-        
-    y_vec = []
-    
-    # performing SPN operation for each chunk of length L * M
-    for w in w_vec:
-        for r in range(N):  # performing N Substitution Permutation Rounds
-            u = __xor(w, k[r])  # u^r = w^r-1 XOR k^r
-            v = ""
 
             for i in range(M):
                 v += Ps[ u[i*L: i*L + L] ]  # performing M substitution operations
-            for i in range(M):
-                v += Ps[ u[i*L: i*L + L] ]  # performing M substitution operations
-
-            w = ""  # calculating w^r = Pp(v^r)
-            for i in range(L*M):
-                w += v[Pp[i]]
+            
             w = ""  # calculating w^r = Pp(v^r)
             for i in range(L*M):
                 w += v[Pp[i]]
 
-        y_vec.append( __xor(v, k[N]) )  # cipher text y = v^N XOR K^(N+1) = v^N XOR K[N]
-        
-    return ''.join(y_vec)
         y_vec.append( __xor(v, k[N]) )  # cipher text y = v^N XOR K^(N+1) = v^N XOR K[N]
         
     return ''.join(y_vec)
