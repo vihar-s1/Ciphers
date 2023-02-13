@@ -9,6 +9,7 @@ __char_index = {chr(i+97): i for i in range(26)}
 
 
 def __xor(s1: str, s2: str) -> str:
+def __xor(s1: str, s2: str) -> str:
     s = ""
     for (i, j) in zip(s1, s2):
         s += str((int(i) + int(j)) % 2)
@@ -19,15 +20,31 @@ def __xor(s1: str, s2: str) -> str:
 def encrypt(x: str, Ps: dict, Pp: list[int], k: list[str]):
     '''
     - Performs Substitution Permutation Network Encryption on Bit-Stream of Length is multiple of L * M .
-    - x: The nessage bit-stream to be encoded. if length is not a multiple of L * M, message is padded with '0' at the start.
+
+    - x: The nessage bit-stream to be encoded. if length is not a multiple of L * M, message is padded with z at the end.
     - Ps: The Substitution Box - maps vector of length L to vector of length L
     - Pp: The Permutation Box - returns permutation of the  L*M long bitstream
     - K: List of N+1 round keys
     
     - returns cipher text on successful encryption else returns None.
+    
+    - returns cipher text on successful encryption else returns None.
     '''
     L = len( list(Ps.keys())[0] )
     M = len(Pp) // L
+    
+    # performing input sanity checks
+    for (key, val) in Ps.items():
+        if len(key) != L or len(val) != L:
+            raise Exception("SPN: encrypt: [Error] Substitution-Box must map L-bit sequenc to another L-bit sequence")
+    
+    if len(Ps) != 2**L:
+        raise Exception("SPN: encrypt: [Error] Substitution-Box must contain mapping for all 2^L combinations")
+    
+    unitLength = M*L
+    if len(x) % unitLength != 0:
+        missing = (len(x) // unitLength) * unitLength - len(x)
+        x = x + 'z'*missing # padding with 'z' to adjust for missing length
     
     # performing input sanity checks
     for (key, val) in Ps.items():
@@ -56,14 +73,34 @@ def encrypt(x: str, Ps: dict, Pp: list[int], k: list[str]):
         for r in range(N):  # performing N Substitution Permutation Rounds
             u = __xor(w, k[r])  # u^r = w^r-1 XOR k^r
             v = ""
+    
+    w_vec = []  # breaking message x in chunks of length L * M
+    for i in range(len(x)//unitLength):
+        w_vec.append( x[i*unitLength : i*unitLength + unitLength] )
+        
+    y_vec = []
+    
+    # performing SPN operation for each chunk of length L * M
+    for w in w_vec:
+        for r in range(N):  # performing N Substitution Permutation Rounds
+            u = __xor(w, k[r])  # u^r = w^r-1 XOR k^r
+            v = ""
 
+            for i in range(M):
+                v += Ps[ u[i*L: i*L + L] ]  # performing M substitution operations
             for i in range(M):
                 v += Ps[ u[i*L: i*L + L] ]  # performing M substitution operations
 
             w = ""  # calculating w^r = Pp(v^r)
             for i in range(L*M):
                 w += v[Pp[i]]
+            w = ""  # calculating w^r = Pp(v^r)
+            for i in range(L*M):
+                w += v[Pp[i]]
 
+        y_vec.append( __xor(v, k[N]) )  # cipher text y = v^N XOR K^(N+1) = v^N XOR K[N]
+        
+    return ''.join(y_vec)
         y_vec.append( __xor(v, k[N]) )  # cipher text y = v^N XOR K^(N+1) = v^N XOR K[N]
         
     return ''.join(y_vec)
