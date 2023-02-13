@@ -11,12 +11,17 @@ __char_index[' '] = ' '
 
 
 def decrypt(cipher: str, key: int) -> str:
-    '''
-    - Performs Decryption operation on Cipher text using key 'key'.
-    - Performs left shift in alphabet order by key positions.
-    - returns plain text.
-    '''
-    cipher = list(cipher)
+    """Performs shift cipher decryption using given key. 
+    Any non-alphabet character including whitespaces is removed from the text before processing.
+
+    Args:
+        cipher (str): text to be decrypted
+        key (int): key to be used to decryt the text
+
+    Returns:
+        str: decryted plain text
+    """
+    cipher = list(cipher.replace(r'[^a-zA-Z]+', "").lower())
     text = ""
     for char in cipher:
         index = __char_index[char]
@@ -24,14 +29,19 @@ def decrypt(cipher: str, key: int) -> str:
     return text
 
 
-def encrypt(text, key) -> str:
-    '''
-    - Performs Encryption operation on Cipher text using key 'key'.
-    - Performs right shift in alphabet order by key positions.
-    - returns cipher text.
-    '''
-    text = list(text)
-    cipher = []
+def encrypt(text: str, key: int) -> str:
+    """Performs shift cipher encryption using given key. 
+    Any non-alphabet character including whitespaces is removed from the text before processing.
+
+    Args:
+        text (str): text to be encrypted
+        key (int): key to be used to encryt the text
+
+    Returns:
+        str: encrypted cipher text
+    """
+    text = list(text.replace(r'[^a-zA-Z]+', "").lower())
+    cipher = ""
     for char in text:
         index = __char_index[char]
         cipher = cipher + chr(97 + (index + key) % 26)
