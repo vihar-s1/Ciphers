@@ -1,20 +1,26 @@
 #!/usr/bin/env python
-from os import system
-
 '''
 Encryption and Decryption functions for AutoKey-Cipher given the key is known.
 '''
+
+from os import system
+import re
 
 __char_index = {chr(i+97):i for i in range(26)}
 __index_char = {i:chr(i+97) for i in range(26)}
         
         
 def encrypt(text: str, key: int) -> str:
-    '''
-    - Performs Encryption operation on Cipher text using key 'key'.
-    - returns cipher text
-    '''
-    text = list(text)
+    """Performs encryption on the text "text" using seed key "key". The function replaces any character outside of a-z A-Z with a blank string ("")
+
+    Args:
+        text (str): plain text to be encryted
+        key (int): key used to perform encrytion
+
+    Returns:
+        str: returns cipher text on successful encryption else returns None
+    """
+    text = list( re.sub(r'[^a-zA-Z]+', "", text).lower() )
     cipher = []
     
     # encoding first character with the key
@@ -27,13 +33,19 @@ def encrypt(text: str, key: int) -> str:
     return ''.join(cipher)
 
 
-def decrypt(cipher: str, key: int):
-    '''
-    - Performs Decryption operation on Cipher text using key 'key'.
-    - returns plain text
-    '''
+def decrypt(cipher: str, key: int) -> str:
+    """Performs decryption on the text "cipher" using seed key "key". The function replaces any character outside of a-z A-Z with a blank string ("")
+
+    Args:
+        text (str): cipher text to be decryted
+        key (int): key used to perform decrytion
+
+    Returns:
+        str: returns plain text on successful decryption else returns None
+    """
     text = []
-    cipher = list(cipher)
+    cipher = list( re.sub(r'[^a-zA-Z]+', "", cipher).lower() )
+
     
     # decoding first character with the key
     text += __index_char[(__char_index[cipher[0]] - key) % 26]
