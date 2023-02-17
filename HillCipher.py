@@ -1,22 +1,27 @@
 #!/usr/bin/env python
-import numpy as np
-import MatrixInverse, math
 
 '''
 Performs Hill Cipher encryption, decryption operation given the key is known.
 Can also determine the key if plain text and corresponding cipher text is known.
+- The realtion between plain text matrix P, cipher text matrix C, and key k is C = P * k or P = C * inv(k)
 '''
+import numpy as np
+import MatrixInverse, math
 
 __char_index = {chr(i+97):i for i in range(26)}
-__char_index[' '] = ' '
 __index_char = {v:k for (k,v) in __char_index.items()}
 
 
-def findKey(plainText, cipherText) -> list[list] | None:
-    '''
-    Attempts to find the key for the given plainText-CipherText pair.
-    If key is found, it returns the key, otherwise returns None.
-    '''
+def findKey(plainText: str, cipherText: str) -> list[list[int]]:
+    """Attempts to find the key for the given plain-Text and Cipher-Text pair.
+
+    Args:
+        plainText (str): The plain text string
+        cipherText (str): The cipher text string
+
+    Returns:
+        list[list[int]]: returns the key if the plainText-cipherText pair is valid pair of appropriate length.
+    """
     
     # key needs to be a sqr matrix of size m such that sqr(m) <= text length so that matrix inversion operations are possible
     maxKeyDim = math.floor(math.sqrt(len(plainText)))
@@ -50,19 +55,22 @@ def findKey(plainText, cipherText) -> list[list] | None:
             key = np.array(plain_mat_inv) @ np.array(cipher_mat) % 26
             return np.round_(key).astype(int).tolist()
         
-    
     # key not found so we return none
     # this can be because the text was not long enough or the plainText - cipherText pair provided was invalid
     return None
 
 
-def encrypt(plainText: str, key: list[list], padding='z') -> str | None:
-    '''
-    - Performs Encryption operation on Cipher text using key matrix 'key'.
-    - returns cipher text if successfuly encrypted else returns none.
-    - If the plain text length is not sufficient to form a matrix for multiplication with the key, 
-    the plain text is padded at the end with the letter z.
-    '''
+def encrypt(plainText: str, key: list[list[int]], padding:str='z') -> str:
+    """performs encryption on the text 'plainText' using the square key matrix 'key' of order n.
+
+    Args:
+        plainText (str): the text string to be encryted
+        key (list[list[int]]): the encrytion key matrix
+        padding (str, optional): the character used to pad the text string if length is not suitable for matrix-multiplication. Defaults to 'z'.
+
+    Returns:
+        str: returns encrypted string if successful else returns None/
+    """
     if (len(plainText) < 1):
         return None
     plain_mat = []
@@ -84,6 +92,7 @@ def encrypt(plainText: str, key: list[list], padding='z') -> str | None:
     for i in range(len(plain_mat)):
         plain_mat[i] = list( map(lambda x: __char_index[x], plain_mat[i]) )
 
+    # encryption process Cipher = Plain * Key
     cipher_mat = np.array(plain_mat) @ np.array(key) % 26
     cipher = ""
     
@@ -95,29 +104,36 @@ def encrypt(plainText: str, key: list[list], padding='z') -> str | None:
     return cipher
 
 
-def decrypt(cipherText: str, key: list[list]) -> str | None:
-    '''
-    - Performs Decryption operation on Cipher text using key matrix 'key'.
-    - returns plain text if successfully decoded else returns none
-    - The cipher wil have to be a multiple of the key dimension for proper decryption
-    else it cannot be decrypted properly.
-    '''
+def decrypt(cipherText: str, key: list[list[int]]) -> str:
+    """performs decryption process on the text 'cipherText' using the key matrix 'key' of order n.
+
+    Args:
+        cipherText (str): the text string to be decrypted
+        key (list[list[int]]): the key matrix
+
+    Returns:
+        str: returns the decrypted text string.
+    """
     cipher_mat = []
     keyDim = len(key)
     
+    # if the the cipher text is not a multiple of key dimension, cipher text matrix cannot be build
     if (len(cipherText) % keyDim != 0):
         return None
     
+    # building text into matrix
     for i in range(len(cipherText) // keyDim):
         cipher_mat.append( cipherText[i*keyDim : i*keyDim+keyDim] )
         
     for i in range(len(cipher_mat)):
         cipher_mat[i] = list( map(lambda x: __char_index[x], cipher_mat[i]) )
 
+    # checking if key is invertible. If the key is not ivertible, encryption cannot be done
     key_inv = MatrixInverse.inverse(key)
     if key_inv is None:
         return None
     
+    # Plain = Cipher * Key_Inv
     plain_mat = np.array(cipher_mat) @ np.array(key_inv) % 26
     plain = ""
     for row in plain_mat:

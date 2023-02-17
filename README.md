@@ -19,7 +19,7 @@ The most basic form of cipher. It involves shifting operation of the plain text 
 ### ___2. Affine Cipher___
 
 - Affine cipher uses a pair of numbers (a, b) as key where $a, b \in \Z_{26}$.
-- The encryption function is defined as $ y = a*x + b (mod 26) $ where $x$ is plain text and $y$ is the cipher text.
+- The encryption function is defined as $y = a*x + b (mod 26)$ where $x$ is plain text and $y$ is the cipher text.
 - Similarly decryption function performs following operation $ x = a^{-1} * (y - b) (mod 26) $.
 - Note that as we use $a^{-1}$ here and $a\in\Z_{26}$ which a ring. So $a$ must be an invertible element of $\Z_{26}$. Otherwise, decryption is not possible.
 
@@ -41,9 +41,27 @@ The most basic form of cipher. It involves shifting operation of the plain text 
 > - decrypt( text="mlpwzkkfco", key=5 )
 > - the function returns following string: "helloworld"
 
- ![Alt text](CipherDiagrams.png)
+ ![AutoKey Encryption Process](AutoKeyEncryption.png)
 
 ### ___4. Hill Cipher___
+
+- Hill Cipher performs encryption and decryption process using a square matrix as key.
+- $C = P*k$ &nbsp;or&nbsp; $P = C*k^{-1}$
+- Here, $C$ is the cipher text, $P$ is the plain text, and $k$ is the key, all in matrix form.
+- The module also contains an additional functionality called ___findKey___ which takes a cipher text plain text as input and attempts to find the corresponding encryption matrix using equation $k = P^{-1}*C$
+  
+- Key matrix used is $KEY=\begin{bmatrix}3&21&20\\4&15&23\\6&14&5\end{bmatrix}$
+
+> - encrypt( plainText="breathtaking", key=KEY )
+> - returns "rupotentoifv"
+
+> - decrypt( cipherText="rupotentoifv", key=KEY )
+> - returns "breathtaking"
+
+> - findKey( plainText="breathtaking", cipherText="rupotentoifv" )
+> - returns the key matrix: $\begin{bmatrix}3&21&20\\4&15&23\\6&14&5\end{bmatrix}$  
+
+### ___5. Affine-Hill Cipher___
 
 ## Private Key Cryptography
 
