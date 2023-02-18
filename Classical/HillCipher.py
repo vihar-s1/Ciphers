@@ -5,8 +5,8 @@ Performs Hill Cipher encryption, decryption operation given the key is known.
 Can also determine the key if plain text and corresponding cipher text is known.
 - The realtion between plain text matrix P, cipher text matrix C, and key k is C = P * k or P = C * inv(k)
 '''
-import numpy as np
-import MatrixInverse, math
+import numpy as np, math
+from Extras import MatrixInverse
 
 __char_index = {chr(i+97):i for i in range(26)}
 __index_char = {v:k for (k,v) in __char_index.items()}

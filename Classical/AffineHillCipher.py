@@ -8,8 +8,8 @@
     - b is row matrix of order N.
 """
 
-import numpy as np
-import MatrixInverse, math
+import numpy as np, math
+from Extras import MatrixInverse
 
 __char_index = {chr(i+97):i for i in range(26)}
 __index_char = {v:k for (k,v) in __char_index.items()}

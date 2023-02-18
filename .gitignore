@@ -1,0 +1,11 @@
+# ignoring  python cache
+__pycache__
+
+# Extras module build data info
+build/*
+Extras.egg-info
+dist
+
+# Files to for personal use
+test.py
+tasks.md

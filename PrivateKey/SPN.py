@@ -26,8 +26,6 @@ def encrypt(x: str, Ps: dict, Pp: list[int], k: list[str]):
     - K: List of N+1 round keys
     
     - returns cipher text on successful encryption else returns None.
-    
-    - returns cipher text on successful encryption else returns None.
     '''
     L = len( list(Ps.keys())[0] )
     M = len(Pp) // L
@@ -35,7 +33,7 @@ def encrypt(x: str, Ps: dict, Pp: list[int], k: list[str]):
     # performing input sanity checks
     for (key, val) in Ps.items():
         if len(key) != L or len(val) != L:
-            raise Exception("SPN: encrypt: [Error] Substitution-Box must map L-bit sequenc to another L-bit sequence")
+            raise Exception("SPN: encrypt: [Error] Substitution-Box must map L-bit sequence to another L-bit sequence")
     
     if len(Ps) != 2**L:
         raise Exception("SPN: encrypt: [Error] Substitution-Box must contain mapping for all 2^L combinations")
