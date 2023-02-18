@@ -1,18 +1,21 @@
 #!/usr/bin/env python
+
+"""
+- Performs Affine-Hill cipher encrytion process.
+- The cipher text C and plain text P are related as follows
+    - C = P * L + b
+    - L is the square encryption matrix of order N.
+    - b is row matrix of order N.
+"""
+
 import numpy as np
 import MatrixInverse, math
-
-'''
-Performs Encryption operation for affine-hill cipher.
-Can also determine the key if a valid plain text - cipher text pair is given.
-'''
-
 
 __char_index = {chr(i+97):i for i in range(26)}
 __index_char = {v:k for (k,v) in __char_index.items()}
 
 
-def findKey(plainText: str, cipherText: str) -> tuple[list[list], list]:
+def findKey(plainText: str, cipherText: str) -> tuple[list[list[int]], list[int]]:
     """makes an attempt to find the key used to encrypt plainText to cipherText
 
     Args:
@@ -72,12 +75,12 @@ def findKey(plainText: str, cipherText: str) -> tuple[list[list], list]:
     return None
             
             
-def encrypt(plainText: str, L: list[list], b:list[int]) -> str:
+def encrypt(plainText: str, L: list[list[int]], b:list[int]) -> str:
     """performs affine-hill cipher encryption process on given cipher text
 
     Args:
         plainText (str): plain text to be encrypted
-        L (list[list]): matrix key L to multiplied with plain text matrix
+        L (list[list[int]]): matrix key L to multiplied with plain text matrix
         b (list[int]): vector key to shift the x*L product
 
     Returns:
@@ -127,7 +130,7 @@ def __main__():
     print(f"L: {L}")
     print(f"m: {m}")
     print()
-    print("encrypted:", encrypt("adisplayedequation", L, m).upper())
+    print("encrypted:", encrypt("adisplayedequation", L, m))
     print("expected:  DSRMSIOPLXLJBZULLM")
     
     

@@ -46,7 +46,8 @@ The most basic form of cipher. It involves shifting operation of the plain text 
 ### ___4. Hill Cipher___
 
 - Hill Cipher performs encryption and decryption process using a square matrix as key.
-- $C = P*k$ &nbsp;or&nbsp; $P = C*k^{-1}$
+$$C = P*k$$
+$$P = C*k^{-1}$$
 - Here, $C$ is the cipher text, $P$ is the plain text, and $k$ is the key, all in matrix form.
 - The module also contains an additional functionality called ___findKey___ which takes a cipher text plain text as input and attempts to find the corresponding encryption matrix using equation $k = P^{-1}*C$
   
@@ -62,6 +63,21 @@ The most basic form of cipher. It involves shifting operation of the plain text 
 > - returns the key matrix: $\begin{bmatrix}3&21&20\\4&15&23\\6&14&5\end{bmatrix}$  
 
 ### ___5. Affine-Hill Cipher___
+
+- Affine-Hill Cipher is the combination of Affine cipher and Hill cipher.
+- Instead of using integers as key elements in affine cipher, we use matrix and vector to perform encryption.
+- The key $k=(a,b)$ is modified to $k=(L,B)$ where $L=[l_{ij}]_{n{\times}n}$ and $B=[b_{ij}]_{1{\times}n}$.
+- The cipher text matrix $C$ and plain text matrix $P$ are related by the equation, $$C=P{\times}L+b$$
+
+- using following (L, b) pair for encryption,
+
+$$L=\begin{bmatrix}3&6&4\\5&15&18\\17&8&5\end{bmatrix} {\ }and{\ } b=\begin{bmatrix}8&13&1\end{bmatrix}$$
+
+> - encrypt( plainText="adisplayedequation", L=L, b=b)
+> - returns encrypted string "dsrmsioplxljbzullm"
+
+> - findKey( plainText="adisplayedequation", cipherText="dsrmsioplxljbzullm" )
+> - returns key pair $L=\begin{bmatrix}3&6&4\\5&15&18\\17&8&5\end{bmatrix}$ and $b=\begin{bmatrix}8&13&1\end{bmatrix}$
 
 ## Private Key Cryptography
 
