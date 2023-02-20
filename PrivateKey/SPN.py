@@ -2,7 +2,11 @@
 
 '''
 Substituition - Permutation Network (SPN) Cipher.
-Contains function to perform SPN encryption.
+- The cipher performs series of enryption rounds.
+- In each of the rounds, the input stream undergoes a substitution operation followed by a permutation operation.
+- The process is reversed during decryption.
+
+Contains function to perform SPN encryption
 '''
 
 __char_index = {chr(i+97): i for i in range(26)}
@@ -17,20 +21,25 @@ def __xor(s1: str, s2: str) -> str:
 
 
 def encrypt(x: str, Ps: dict, Pp: list[int], k: list[str]):
-    '''
-    - Performs Substitution Permutation Network Encryption on Bit-Stream of Length is multiple of L * M .
+    """Performs SPN encryption on Bit-Stream of length which is multiple of L * M
 
-    - x: The nessage bit-stream to be encoded. if length is not a multiple of L * M, message is padded with z at the end.
-    - Ps: The Substitution Box - maps vector of length L to vector of length L
-    - Pp: The Permutation Box - returns permutation of the  L*M long bitstream
-    - K: List of N+1 round keys
-    
-    - returns cipher text on successful encryption else returns None.
-    '''
+    Args:
+        x (str): The message bit-stream to be encoded. If length is not a multiple of L*M, message is padded with 0s at beginning.
+        Ps (dict): The Substitution Box of size 2^L consisting of all permutation of all L-bit long strings
+        Pp (list[int]): The Permutation Box of size L * M used to permute the bitstream
+        k (list[str]): N+1 round keys list
+
+    Raises:
+        Exception: Raises exception when Substitution-Box dimensions are not satisfied
+        Exception: Raises exception when Substitution-Box does not contain L-bit to L-bit mapping
+
+    Returns:
+        _type_: returns encrypted bitstream on successful encryption.
+    """
     L = len( list(Ps.keys())[0] )
     M = len(Pp) // L
     
-    # performing input sanity checks
+    ########################################## performing input sanity checks ##########################################
     for (key, val) in Ps.items():
         if len(key) != L or len(val) != L:
             raise Exception("SPN: encrypt: [Error] Substitution-Box must map L-bit sequence to another L-bit sequence")
@@ -39,22 +48,11 @@ def encrypt(x: str, Ps: dict, Pp: list[int], k: list[str]):
         raise Exception("SPN: encrypt: [Error] Substitution-Box must contain mapping for all 2^L combinations")
     
     unitLength = M*L
-    if len(x) % unitLength != 0:
-        missing = (len(x) // unitLength) * unitLength - len(x)
-        x = x + 'z'*missing # padding with 'z' to adjust for missing length
+    while len(x) % unitLength != 0:
+        x = "0" + x
+        
+    ###################################### performing input sanity checks complete ######################################
     
-    # performing input sanity checks
-    for (key, val) in Ps.items():
-        if len(key) != L or len(val) != L:
-            raise Exception("SPN: encrypt: [Error] Substitution-Box must map L-bit sequenc to another L-bit sequence")
-    
-    if len(Ps) != 2**L:
-        raise Exception("SPN: encrypt: [Error] Substitution-Box must contain mapping for all 2^L combinations")
-    
-    unitLength = M*L
-    if len(x) % unitLength != 0:
-        missing = (len(x) // unitLength) * unitLength - len(x)
-        x = '0'*missing + x # padding with '0' to adjust for missing length
     
     # Round keys K^1, K^2, ..., K^(N+1) equivalently K[0], K[1], ..., k[N]
     N = len(k) - 1
