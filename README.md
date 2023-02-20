@@ -62,7 +62,7 @@ decrypt( text="mlpwzkkfco", key=5 )
 # the function returns following string: "helloworld"
 ```
 
- ![AutoKey Encryption Process](AutoKeyEncryption.png)
+ ![Autokey Encryption Process](https://user-images.githubusercontent.com/96971096/219880843-d2ba1256-81e1-438e-a534-472e96b8849d.png)
 
 ### ___4. Hill Cipher___
 
