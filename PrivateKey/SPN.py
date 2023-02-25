@@ -9,8 +9,25 @@ Substituition - Permutation Network (SPN) Cipher.
 Contains function to perform SPN encryption
 '''
 
-__char_index = {chr(i+97): i for i in range(26)}
+# defining custom exception handling classes
+class SubstitutionBoxMappingError(Exception):
+    """Custom error raised when the substitution box does not contain L-bit to L-bit mapping
 
+    Args:
+        Exception (_type_): Extends class Exception
+    """
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+        
+class SubstitutionBoxLengthError(Exception):
+    """Custom error raisd when the substitution box is not of appropriate length, i.e., 2^L
+
+    Args:
+        Exception (_type_): Extends class Exception
+    """
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+        
 
 def __xor(s1: str, s2: str) -> str:
     s = ""
@@ -30,8 +47,8 @@ def encrypt(x: str, Ps: dict, Pp: list[int], k: list[str]):
         k (list[str]): N+1 round keys list
 
     Raises:
-        Exception: Raises exception when Substitution-Box dimensions are not satisfied
-        Exception: Raises exception when Substitution-Box does not contain L-bit to L-bit mapping
+        SubstitutionBoxLengthError: Raises exception when Substitution-Box dimensions are not satisfied
+        SubstitutionBoxMappingErro: Raises exception when Substitution-Box does not contain L-bit to L-bit mapping
 
     Returns:
         _type_: returns encrypted bitstream on successful encryption.
@@ -42,10 +59,10 @@ def encrypt(x: str, Ps: dict, Pp: list[int], k: list[str]):
     ########################################## performing input sanity checks ##########################################
     for (key, val) in Ps.items():
         if len(key) != L or len(val) != L:
-            raise Exception("SPN: encrypt: [Error] Substitution-Box must map L-bit sequence to another L-bit sequence")
+            raise SubstitutionBoxMappingError("Substitution-Box must map L-bit sequence to another L-bit sequence")
     
     if len(Ps) != 2**L:
-        raise Exception("SPN: encrypt: [Error] Substitution-Box must contain mapping for all 2^L combinations")
+        raise SubstitutionBoxLengthError("Substitution-Box must contain mapping for all 2^L combinations")
     
     unitLength = M*L
     while len(x) % unitLength != 0:
@@ -81,6 +98,82 @@ def encrypt(x: str, Ps: dict, Pp: list[int], k: list[str]):
     return ''.join(y_vec)
 
 
+def decrypt(y: str, Ps: dict[str, str], Pp: list[int], k: list[str]):
+    """Performs SPN decryption on Bit-Stream of length which is multiple of L * M
+
+    Args:
+        y (str): The message bit-stream to be decoded. If length is not a multiple of L*M, decoding is not performed
+        Ps (dict): The Substitution Box of size 2^L consisting of all permutation of all L-bit long strings.
+        Pp (list[int]): The Permutation Box of size L * M used to permute the bitstream.
+        k (list[str]): N+1 round keys list.
+        
+        Note that Ps, Pp, and k are supposed to be the same as those used during encryption and NOT the inverses.
+
+    Raises:
+        Exception: Raises exception when Substitution-Box dimensions are not satisfied
+        Exception: Raises exception when Substitution-Box does not contain L-bit to L-bit mapping
+
+    Returns:
+        _type_: returns encrypted bitstream on successful encryption.
+    """
+    L = len( list(Ps.keys())[0] )
+    M = len(Pp) // L
+    
+    ########################################## performing input sanity checks ##########################################
+    for (key, val) in Ps.items():
+        if len(key) != L or len(val) != L:
+            raise SubstitutionBoxMappingError("Substitution-Box must map L-bit sequence to another L-bit sequence")
+    
+    if len(Ps) != 2**L:
+        raise SubstitutionBoxLengthError("Substitution-Box must contain mapping for all 2^L combinations")
+    
+    # while len(y) % unitLength != 0:
+    #     y = "0" + y
+        
+    ###################################### performing input sanity checks complete ######################################
+    
+    #################################### inverting Substitution and Permutation Boxes ###################################
+    Ps_inv = {v:kk for (kk,v) in Ps.items()}
+    Pp_inv = [0]*len(Pp)
+    for i in range(len(Pp)):
+        Pp_inv[Pp[i]] = i
+    #################################### inverting Substitution and Permutation Boxes ###################################
+
+    #TODO: decryption code here
+    N = len(k) - 1
+    unitLength = M*L
+    
+    y_vec = [ y[i*unitLength : i*unitLength + unitLength] for i in range(len(y)//unitLength) ]
+    x_vec = []
+    
+    for y in y_vec:
+        # Nth round roll-back
+        # y = v^N XOR k[N]
+        v = __xor(y, k[N])
+              
+        u = "" # declaring u global for the next 2 for-loops
+        for i in range(M):
+            u += Ps_inv[ v[i*L : i*L + L] ]
+        
+        # running 0 to N-1 rounds in reverse
+        w = ""
+        for r in range(N-1, -1, -1):
+            # w(r-1) = ur XOR kr
+            w = __xor(u, k[r])  # inverting key addition
+            v = ""
+            
+            for i in range(L*M):
+                v += w[Pp_inv[i]] # inverting permutation 
+            
+            u = ""
+            for i in range(M): # inverting substitution
+                u += Ps_inv[ v[i*L : i*L + L] ]
+        
+        x_vec.append(w)
+    
+    return ''.join(x_vec)
+
+
 def __main__():
     # L = M = N = 4
     Ps = {
@@ -109,6 +202,8 @@ def __main__():
     print("x  :",x)
     print("y* :",y_expected)
     print("y  :",y)
+    x_decrypted = decrypt(y, Ps, Pp, kr)
+    print(x_decrypted == x)
     
 
 if __name__ == "__main__":
