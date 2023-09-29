@@ -2,6 +2,21 @@
 
 Consists of implementations of various classical and private key cryptographic algorithms.
 
+## Table of Contents <!-- omit in toc -->
+
+- [`NOTE`](#note)
+- [Contributing](#contributing)
+- [Bug Reports and Feature Requests](#bug-reports-and-feature-requests)
+- [Classical Cryptography Ciphers](#classical-cryptography-ciphers)
+  - [___1. Shift Cipher___](#1-shift-cipher)
+  - [___2. Affine Cipher___](#2-affine-cipher)
+  - [___3. Autokey Cipher___](#3-autokey-cipher)
+  - [___4. Hill Cipher___](#4-hill-cipher)
+  - [___5. Affine-Hill Cipher___](#5-affine-hill-cipher)
+- [Private Key Cryptography](#private-key-cryptography)
+  - [___1. Substitution Permutation Network (SPN)___](#1-substitution-permutation-network-spn)
+  - [___2. Data Encryption Standard (DES)___](#2-data-encryption-standard-des)
+
 ## `NOTE`
 
 > ___The `setup.py` file sets the `Extras` module globally on the system or the virtual environment on which the code will be running. This to allow access to the supporting modules in the `Extras` folder.___
@@ -12,9 +27,18 @@ Consists of implementations of various classical and private key cryptographic a
 python setup.py install
 ```
 
-## Classical Cryptography Ciphers
+> No additional modules except for `os`, `re`, and `numpy` are required for running any of the code.
 
----
+## Contributing
+
+- If you want to contribute, follow the contribution guidelines here: [Contributing Guidelines](https://github.com/vihar-s1/Ciphers/blob/main/CONTRIBUTING.md)
+
+## Bug Reports and Feature Requests
+
+- If you encountered an issue or want to report a bug, following is the [Bug Report Template](https://github.com/vihar-s1/Ciphers/blob/main/.github/ISSUE_TEMPLATE/bug_report.md) you will be asked to follow.
+- Any new feature requests will also appreciated if it follows the predefined [Feature Request Template](https://github.com/vihar-s1/Ciphers/blob/main/.github/ISSUE_TEMPLATE/feature_request.md).
+
+## Classical Cryptography Ciphers
 
 ### ___1. Shift Cipher___
 
@@ -113,8 +137,6 @@ findKey( plainText="adisplayedequation", cipherText="dsrmsioplxljbzullm" )
 
 ## Private Key Cryptography
 
----
-
 ### ___1. Substitution Permutation Network (SPN)___
 
 As the name suggests, SPN cipher performs two operations, namely, Substitution and Permutation operation on the input bitstream $P$.
@@ -142,3 +164,6 @@ decrypt(y="1011110011010110", Ps, Pp, Kr)
 ```
 
 ### ___2. Data Encryption Standard (DES)___
+
+
+[def]: #note
