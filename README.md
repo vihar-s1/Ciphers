@@ -1,5 +1,13 @@
 # Ciphers
 
+![forks](https://img.shields.io/github/forks/vihar-s1/Ciphers?style=for-the-badge&color=dark-green)
+![Watchers](https://img.shields.io/github/watchers/vihar-s1/Ciphers?style=for-the-badge&color=dark-green)
+![Repo stars](https://img.shields.io/github/stars/vihar-s1/Ciphers?style=for-the-badge&color=dark-green)
+![Contributors](https://img.shields.io/github/contributors/vihar-s1/Ciphers?style=for-the-badge&color=dark-green)
+![Issues](https://img.shields.io/github/issues/vihar-s1/Ciphers?style=for-the-badge&color=dark-green)
+
+<!-- ![Project Logo](logo.png) -->
+
 Consists of implementations of various classical and private key cryptographic algorithms.
 
 ## Table of Contents <!-- omit in toc -->
