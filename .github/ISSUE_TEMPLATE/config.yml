@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discussion Page
+    url: https://github.com/Ciphers/discussions
+    about: Github Discussion Page for the Repository

@@ -172,6 +172,3 @@ decrypt(y="1011110011010110", Ps, Pp, Kr)
 ```
 
 ### ___2. Data Encryption Standard (DES)___
-
-
-[def]: #note

@@ -10,23 +10,23 @@ Welcome to the open-source Ciphers project! Contributions are always appreciated
 
 3. **_MAKE SURE TO ADD DESCRIPTION OF THE NEW SCHEME IN THE README FILE AS WELL. THE P.R. WON'T BE ACCEPTED OTHERWISE._**
 
-```bash
-git checkout -b <new-branch-name>
-```
+      ```bash
+      git checkout -b <new-branch-name>
+      ```
 
 4. **Commit Changes:** Use clear and simple commit messages. For example:
    - "Added a new cryptographic scheme"
    - "Fixed an equation in decoding"
 
-```bash
-git commit -m "<mandatory commit message here>" -m "<optional commit description here>"
-```
+      ```bash
+      git commit -m "<mandatory commit message here>" -m "<optional commit description here>"
+      ```
 
 5. **Push to Your Fork:** Send your changes back to your forked repository.
 
-```bash
-git push origin <branch-name>
-```
+      ```bash
+      git push origin <branch-name>
+      ```
 
 6. **Create a Pull Request (PR):** Open a PR to the main project repository. Describe your changes briefly and why they're awesome.
 
