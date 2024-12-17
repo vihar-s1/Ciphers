@@ -1,9 +1,15 @@
 # ignoring  python cache
 __pycache__
 
-# Extras module build data info
+# ingoring ide related and virtual env files
+.idea
+.vscode
+.venv
+venv
+
+# module build data info
 build/*
-Extras.egg-info
+*.egg-info
 dist
 
 # Files to for personal use
